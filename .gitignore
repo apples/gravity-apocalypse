@@ -1,0 +1,9 @@
+*.txt
+*.log
+*.dll
+*.exe
+*.out
+*.depend
+*.layout
+*.swp
+obj/*
