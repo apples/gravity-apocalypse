@@ -2,6 +2,7 @@
 #define BALL_H
 
 #include "simvec.h"
+#include "paddle.h"
 
 #include "inugami/animatedsprite.h"
 #include "inugami/transform.h"
@@ -23,15 +24,20 @@ public:
     void tick(const AccelFunc& accel);
     void draw(Transform mat);
 
-    void hit();
+    void hit(Paddle *p);
 
-    SimVec<double> pos, vel, acc;
+    SimVec<double> pos, vel;
+
+    Paddle *owner;
 
 private:
     void setupSprites();
 
     AnimatedSprite sprite;
     int paddleHits;
+
+    float size;
+
 };
 
 #endif // BALL_H

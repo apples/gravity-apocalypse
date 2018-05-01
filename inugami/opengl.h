@@ -18,7 +18,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #define OPENGL_H_INCLUDED
 
 #include <GL/glew.h>
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "../glm/glm.hpp"
 //#include "../glm/gtc/matrix_projection.hpp"

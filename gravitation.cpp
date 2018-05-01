@@ -17,16 +17,16 @@ Gravitation::Gravitation() :
     time(0), timeEnd(0), hold(0), decay(0), decayEnd(0),
     rot(0.0)
 {}
-
-Gravitation::Gravitation(double gForce, double curveIn, double influenceIn, int startTime, int endTime, int holdIn, int decayIn) :
-    Force(),
-    pos{0,0}, vel{0,0},
-    gTarget(gForce),
-    curve(curveIn),
-    influence(influenceIn),
-    time(startTime), timeEnd(endTime), hold(holdIn), decay(0), decayEnd(decayIn),
-    rot(0.0)
-{}
+//
+//Gravitation::Gravitation(double gForce, double curveIn, double influenceIn, int startTime, int endTime, int holdIn, int decayIn) :
+//    Force(),
+//    pos{0,0}, vel{0,0},
+//    gTarget(gForce),
+//    curve(curveIn),
+//    influence(influenceIn),
+//    time(startTime), timeEnd(endTime), hold(holdIn), decay(0), decayEnd(decayIn),
+//    rot(0.0)
+//{}
 
 Gravitation::~Gravitation()
 {}
@@ -59,10 +59,11 @@ void Gravitation::draw(Transform mat)
     if (decayEnd != 0) rot += decay/double(decayEnd);
 
     mat.translate(Vec3(pos.x, pos.y, 0.f));
-    mat.scale(Vec3(gCurrent/6.0, gCurrent/6.0, 1.f));
-    mat.rotate(rot*10.0, Vec3(0.f, 0.f, 1.f));
+    mat.scale(Vec3(gCurrent/4.0, gCurrent/4.0, 1.f));
+    mat.rotate(rot*5.0*influence, Vec3(0.f, 0.f, -1.f));
     resource->core->modelMatrix(mat);
-    resource->getSheet("forces").draw(0,0);
+    if (gCurrent>0.0) resource->getSheet("forces").draw(0,0);
+    else resource->getSheet("forces").draw(0,1);
 }
 
 SimVec<double> Gravitation::getAccel(const SimVec<double>& inPos)
@@ -71,11 +72,10 @@ SimVec<double> Gravitation::getAccel(const SimVec<double>& inPos)
     rval.x = pos.x-inPos.x;
     rval.y = pos.y-inPos.y;
     double dist = rval.length();
-    dist /= influence;
     if (dist < gCurrent) return {0.0, 0.0};
     rval /= dist;
+    dist /= influence;
     rval *= gCurrent/(dist*dist+1.0);
-    logger->log<5>("F={", rval.x, ", ", rval.y, "}");
     return rval;
 }
 

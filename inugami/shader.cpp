@@ -50,7 +50,13 @@ Shader::Shader(const Program &source)
         ids[p.first] = glCreateShader(shaderTypes[p.first]);
         if (!compile(ids[p.first], p.second))
         {
-            throw std::runtime_error("Failed to compile shader!");
+            GLsizei len = 0;
+            glGetShaderiv(ids[p.first], GL_INFO_LOG_LENGTH, &len);
+            std::vector<GLchar> log(len);
+            glGetShaderInfoLog(ids[p.first], 1024, &len, &log[0]);
+            //throw ShaderE_CompileError(codeStr, &log[0]);
+
+            throw std::runtime_error(&log[0]);
         }
     }
 
@@ -60,7 +66,7 @@ Shader::Shader(const Program &source)
     for (auto &p : ids) glDeleteShader(p.second);
 
     GLint status;
-    glGetShaderiv(program, GL_LINK_STATUS, &status);
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
 
     if (status == GL_FALSE) throw std::runtime_error("Failed to link shader!");
 }

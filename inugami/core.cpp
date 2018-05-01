@@ -47,13 +47,18 @@ Core::Core(const RenderParams &params) :
 
     glfwInit();
 
-    glfwWindowHint(GLFW_FSAA_SAMPLES, rparams.fsaaSamples);
+    glfwWindowHint(GLFW_SAMPLES, rparams.fsaaSamples);
+
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     window = glfwCreateWindow
     (
-        rparams.width, rparams.height,
-        (rparams.fullscreen)? GLFW_FULLSCREEN : GLFW_WINDOWED,
-        windowTitle.c_str(), 0
+        rparams.width, rparams.height, "Gravity Apocalypse",
+        (rparams.fullscreen)? nullptr : nullptr,
+        nullptr
     );
 
     if (!window)
@@ -348,7 +353,12 @@ void Core::setShader(Shader* in)
 
 int Core::getWindowParam(int param)
 {
-    return glfwGetWindowParam(window, param);
+    return glfwGetWindowAttrib(window, param);
+}
+
+bool Core::closeRequested() const
+{
+    return glfwWindowShouldClose(window);
 }
 
 void Core::createDefaultShader()
@@ -380,10 +390,9 @@ void Core::createDefaultShader()
         "in vec3 Normal;\n"
         "in vec2 TexCoord;\n"
         "uniform sampler2D Tex1;\n"
-        "out vec4 FragColor;\n"
         "void main() {\n"
         "    vec4 texColor = texture( Tex1, TexCoord );\n"
-        "    FragColor = texColor;\n"
+        "    gl_FragColor = texColor;\n"
         "}\n"
     ;
     defaultShader = new Shader(program);

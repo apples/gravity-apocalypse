@@ -49,10 +49,9 @@ Resource::Resource() :
         "in vec3 Normal;\n"
         "in vec2 TexCoord;\n"
         "uniform sampler2D Tex1;\n"
-        "out vec4 FragColor;\n"
         "void main() {\n"
         "    vec4 texColor = texture(Tex1, interpolateAtCentroid(TexCoord));\n"
-        "    FragColor = texColor;\n"
+        "    gl_FragColor = texColor;\n"
         "}\n"
     ;
     shader = new Shader(pro);
@@ -63,14 +62,20 @@ Resource::Resource() :
     Interface* iface = core->getInterface();
     keybinds["player.1.up"] =   iface->getProxy('W'_ivk);
     keybinds["player.1.down"] = iface->getProxy('S'_ivk);
+    keybinds["player.1.fire"] = iface->getProxy(' '_ivk);
     keybinds["player.2.up"] =   iface->getProxy('U'_ivkArrow);
     keybinds["player.2.down"] = iface->getProxy('D'_ivkArrow);
+    keybinds["player.2.fire"] = iface->getProxy('0'_ivkNumpad);
     logger->log<5>("Done.");
 
     logger->log<5>("Loading spritesheets...");
     sheets["paddles"] = new Spritesheet("data/paddles.png", 8, 32);
     sheets["ball"] = new Spritesheet("data/ball.png", 8, 8);
+    sheets["ball.2x2"] = new Spritesheet("data/ball.png", 16, 16);
     sheets["forces"] = new Spritesheet("data/forces.png", 32, 32);
+    sheets["interface"] = new Spritesheet("data/interface.png", 16, 16);
+    sheets["powerups"] = new Spritesheet("data/powerups.png", 8, 8);
+    sheets["font"] = new Spritesheet("data/font.png", 8, 8);
     logger->log<5>("Done.");
 }
 

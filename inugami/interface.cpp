@@ -21,7 +21,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 namespace Inugami {
 
 bool Interface::callbacksRegistered;
-std::map<GLFWwindow, Interface*> Interface::windowMap;
+std::map<GLFWwindow*, Interface*> Interface::windowMap;
 
 Interface::Proxy::Proxy() :
     iface(nullptr),
@@ -55,7 +55,7 @@ void Interface::Proxy::reassign(int k)
     key = k;
 }
 
-Interface::Interface(GLFWwindow windowIN) :
+Interface::Interface(GLFWwindow *windowIN) :
     window(windowIN)
 {
     windowMap[window] = this;
@@ -145,8 +145,8 @@ void Interface::setMouseWheel(double x, double y)
 
 void Interface::showMouse(bool show) const
 {
-    if (show) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL);
-    else glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_HIDDEN);
+    if (show) glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    else glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 auto Interface::getProxy(int k) -> Proxy
@@ -160,7 +160,7 @@ void Interface::clearPresses()
     mouseStates.presses.reset();
 }
 
-void Interface::keyboardCallback(GLFWwindow win, int key, int action) //static
+void Interface::keyboardCallback(GLFWwindow *win, int key, int, int action, int) //static
 {
     Interface* iface = windowMap[win];
     if (!iface) return;
@@ -178,7 +178,7 @@ void Interface::keyboardCallback(GLFWwindow win, int key, int action) //static
     }
 }
 
-void Interface::mouseButtonCallback(GLFWwindow win, int button, int action) //static
+void Interface::mouseButtonCallback(GLFWwindow *win, int button, int action, int) //static
 {
     Interface* iface = windowMap[win];
     if (!iface) return;
@@ -194,7 +194,7 @@ void Interface::mouseButtonCallback(GLFWwindow win, int button, int action) //st
     }
 }
 
-void Interface::mousePositionCallback(GLFWwindow win, int x, int y) //static
+void Interface::mousePositionCallback(GLFWwindow *win, double x, double y) //static
 {
     Interface* iface = windowMap[win];
     if (!iface) return;
@@ -202,7 +202,7 @@ void Interface::mousePositionCallback(GLFWwindow win, int x, int y) //static
     iface->mousePos.y = y;
 }
 
-void Interface::mouseWheelCallback(GLFWwindow win, double x, double y) //static
+void Interface::mouseWheelCallback(GLFWwindow *win, double x, double y) //static
 {
     Interface* iface = windowMap[win];
     if (!iface) return;

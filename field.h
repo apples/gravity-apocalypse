@@ -3,6 +3,7 @@
 
 #include "ball.h"
 #include "force.h"
+#include "item.h"
 #include "paddle.h"
 #include "simvec.h"
 
@@ -23,6 +24,8 @@ public:
 
     SimVec<double> getAccel(SimVec<double> pos);
 
+    void addForce(Force *f);
+
     const int WIDTH;
     const int HEIGHT;
 
@@ -30,13 +33,17 @@ public:
 
     std::vector<Ball*> balls;
     std::vector<Force*> forces;
+    std::vector<Item*> items;
 
     std::array<int, 2> scores;
 
 private:
-    void doCollision();
+    void updateBalls();
+    void updateItems();
+    void updateForces();
     void spawnForces();
     void resetBalls();
+    void spawnBall();
 
     struct
     {
@@ -45,6 +52,10 @@ private:
     } spawnData;
 
     std::mt19937 rng;
+
+    Ball *leftMost;
+    Ball *rightMost;
+
 };
 
 #endif // FIELD_H

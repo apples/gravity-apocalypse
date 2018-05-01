@@ -7,7 +7,6 @@ class Gravitation : public Force
 {
 public:
     Gravitation();
-    Gravitation(double gForce, double curveIn, double influenceIn, int startTime, int endTime, int holdIn, int decayIn);
     virtual ~Gravitation();
 
     virtual void tick();

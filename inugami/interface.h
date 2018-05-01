@@ -55,7 +55,7 @@ public:
     static void poll();
 
     Interface() = delete;
-    Interface(GLFWwindow windowIN);
+    Interface(GLFWwindow *windowIN);
     virtual ~Interface();
 
     bool keyDown(int key) const;
@@ -82,16 +82,16 @@ private:
     };
 
     static bool callbacksRegistered;
-    static std::map<GLFWwindow, Interface*> windowMap;
+    static std::map<GLFWwindow*, Interface*> windowMap;
 
-    static void keyboardCallback(GLFWwindow win, int key, int action);
-    static void mouseButtonCallback(GLFWwindow win, int button, int action);
-    static void mousePositionCallback(GLFWwindow win, int x, int y);
-    static void mouseWheelCallback(GLFWwindow win, double x, double y);
+    static void keyboardCallback(GLFWwindow *win, int key, int, int action, int);
+    static void mouseButtonCallback(GLFWwindow *win, int button, int action, int);
+    static void mousePositionCallback(GLFWwindow *win, double x, double y);
+    static void mouseWheelCallback(GLFWwindow *win, double x, double y);
 
     void clearPresses();
 
-    GLFWwindow window;
+    GLFWwindow *window;
 
     std::string keyBuffer;
     State<GLFW_KEY_LAST+1> keyStates;

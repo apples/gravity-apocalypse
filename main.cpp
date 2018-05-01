@@ -68,38 +68,70 @@ void init()
 
 void draw()
 {
-    SLog slog(logger, "DRAW");
-
-    logger->log<10>("Frame start.");
     core->beginFrame();
 
-    logger->log<10>("Setting camera...");
     core->applyCam(Camera().ortho(-128.f, 128.f, -96.f, 96.f, -1.f, 1.f));
 
-    logger->log<10>("Drawing paddles...");
     Transform mat;
     field->draw(mat);
 
+    {
+        static auto drawDivider = [](Transform mat)
+        {
+            static unsigned int anim = 0;
+            ++anim;
+            mat.translate(Vec3(-120.f, 88.f, 0.f));
+            for (int i=0; i<16; ++i)
+            {
+                mat.push();
+                mat.translate(Vec3{i*16.f, 0.f, 0.f});
+                core->modelMatrix(mat);
+                resource->getSheet("interface").draw(0,(anim/2+i)%16);
+                mat.pop();
+            }
+        };
+        mat.push();
+        drawDivider(mat);
+        mat.scale(Vec3{-1.f, -1.f, 1.f});
+        drawDivider(mat);
+        mat.pop();
+    }
+
+    {
+        static auto drawNum = [](int num, Transform mat)
+        {
+            auto snum = stringify(num);
+            mat.translate(Vec3{-((snum.length()-1)*4.0), 0.f, 0.f});
+            for (char c : snum)
+            {
+                core->modelMatrix(mat);
+                resource->getSheet("font").draw(c/16, c%16);
+                mat.translate(Vec3{8.0, 0.f, 0.f});
+            }
+        };
+        mat.push();
+        mat.translate(Vec3{-64.f, 88.f, 0.f});
+        drawNum(field->scores[0], mat);
+        mat.pop();
+        mat.push();
+        mat.translate(Vec3{64.f, 88.f, 0.f});
+        drawNum(field->scores[1], mat);
+        mat.pop();
+    }
+
     core->endFrame();
-    logger->log<10>("Frame end.");
 }
 
 void tick()
 {
-    SLog slog(logger, "TICK");
-
-    logger->log<10>("Polling interface...");
     iface->poll();
 
-    logger->log<10>("Ticking paddles...");
     field->tick();
-
-    core->setWindowTitle((stringify(field->scores[0])+":"+stringify(field->scores[1])).c_str(), true);
 }
 
 void idle()
 {
-    if (iface->keyDown(GLFW_KEY_ESC) || core->getWindowParam(GLFW_CLOSE_REQUESTED))
+    if (iface->keyDown(GLFW_KEY_ESCAPE) || core->closeRequested())
     {
         core->running = false;
     }

@@ -185,6 +185,8 @@ public:
 
     int getWindowParam(int param);
 
+    bool closeRequested() const;
+
     /**
      * Set this to @a false at any time to exit the @a go() cycle.
      */
@@ -228,7 +230,7 @@ private:
     std::string windowTitle;
     bool windowTitleShowFPS;
 
-    GLFWwindow window;
+    GLFWwindow *window;
     Interface *iface;
 
     Shader *defaultShader, *customShader;
